@@ -246,6 +246,22 @@ pub type DeferredViewportUiCallback = dyn Fn(&Context) + Sync + Send;
 /// Render the given viewport, calling the given ui callback.
 pub type ImmediateViewportRendererCallback = dyn for<'a> Fn(&Context, ImmediateViewport<'a>);
 
+/// The depth of a layer.
+#[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
+pub enum ViewportLayer {
+    /// The viewport is fixed at the back-most of the compositor.
+    Background,
+    /// The viewport is above the background layer, and below the top layer.
+    /// Regular viewports are typically rendered above this layer.
+    Bottom,
+    /// The viewport is above the bottom layer, and below the overlay layer.
+    /// Regular viewports are typically rendered below this layer.
+    #[default]
+    Top,
+    /// The viewport is fixed at the front-most of the compositor.
+    Overlay,
+}
+
 /// Control the building of a new egui viewport (i.e. native window).
 ///
 /// See [`crate::viewport`] for how to build new viewports (native windows).
@@ -267,6 +283,8 @@ pub struct ViewportBuilder {
 
     /// This is wayland only. See [`Self::with_app_id`].
     pub app_id: Option<String>,
+    pub app_instance: Option<String>,
+    pub layer_surface: Option<ViewportLayer>,
 
     /// The desired outer position of the window.
     pub position: Option<Pos2>,
@@ -612,6 +630,34 @@ impl ViewportBuilder {
         self
     }
 
+    /// ### On Wayland
+    /// On Wayland this sets the Application Instance ID for the window.
+    ///
+    /// The application instance ID identifies a specific instance of a window
+    /// below an application ID.
+    #[inline]
+    pub fn with_app_instance(mut self, app_instance: impl Into<String>) -> Self {
+        self.app_instance = Some(app_instance.into());
+        self
+    }
+
+    /// ### On Wayland
+    /// On Wayland this sets the layer shell which the window will be placed in.
+    ///
+    /// A layer shell surface is a special type of surface that is managed by
+    /// the compositor. It can be used to create a window that has a specific
+    /// z-depth (such at top-most or bottom-most) and can have a specific
+    /// position set.
+    ///
+    /// See [Waylands protocol specification][wlr-layer-shell-unstable-v1] for
+    /// more information on this Wayland-specific option.
+    ///
+    /// [wlr-layer-shell-unstable-v1]: https://wayland.app/protocols/wlr-layer-shell-unstable-v1
+    pub fn with_layer_surface(mut self, value: ViewportLayer) -> Self {
+        self.layer_surface = Some(value);
+        self
+    }
+
     /// Control if window is always-on-top, always-on-bottom, or neither.
     #[inline]
     pub fn with_window_level(mut self, level: WindowLevel) -> Self {
@@ -651,6 +697,8 @@ impl ViewportBuilder {
         let Self {
             title: new_title,
             app_id: new_app_id,
+            app_instance: new_app_instance,
+            layer_surface: new_layer_surface,
             position: new_position,
             inner_size: new_inner_size,
             min_inner_size: new_min_inner_size,
@@ -806,6 +854,16 @@ impl ViewportBuilder {
 
         if new_app_id.is_some() && self.app_id != new_app_id {
             self.app_id = new_app_id;
+            recreate_window = true;
+        }
+
+        if new_app_instance.is_some() && self.app_instance != new_app_instance {
+            self.app_instance = new_app_instance;
+            recreate_window = true;
+        }
+
+        if new_layer_surface.is_some() && self.layer_surface != new_layer_surface {
+            self.layer_surface = new_layer_surface;
             recreate_window = true;
         }
 
@@ -1072,7 +1130,7 @@ pub enum ViewportCommand {
 
     /// Set the IME cursor editing area.
     IMERect(crate::Rect),
-    IMEAllowed(bool),
+    IMEAllowed(Option<crate::Rect>),
     IMEPurpose(IMEPurpose),
 
     /// Bring the window into focus (native only).

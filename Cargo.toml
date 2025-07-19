@@ -106,9 +106,9 @@ wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 web-sys = "0.3.73"
 web-time = "1.1.0" # Timekeeping for native and web
-wgpu = { version = "25.0.0", default-features = false }
+wgpu = { version = "25.0.0", default-features = false, features = ["vulkan"] }
 windows-sys = "0.59"
-winit = { version = "0.30.7", default-features = false }
+winit = { git = "https://github.com/SergioRibera/winit", branch = "layer_shell", default-features = false }
 
 [workspace.lints.rust]
 unsafe_code = "deny"
@@ -147,11 +147,11 @@ cloned_instead_of_copied = "warn"
 dbg_macro = "warn"
 debug_assert_with_mut_call = "warn"
 derive_partial_eq_without_eq = "warn"
-disallowed_macros = "warn"                  # See clippy.toml
-disallowed_methods = "warn"                 # See clippy.toml
-disallowed_names = "warn"                   # See clippy.toml
-disallowed_script_idents = "warn"           # See clippy.toml
-disallowed_types = "warn"                   # See clippy.toml
+disallowed_macros = "warn"                   # See clippy.toml
+disallowed_methods = "warn"                  # See clippy.toml
+disallowed_names = "warn"                    # See clippy.toml
+disallowed_script_idents = "warn"            # See clippy.toml
+disallowed_types = "warn"                    # See clippy.toml
 doc_link_with_quotes = "warn"
 doc_markdown = "warn"
 empty_enum = "warn"

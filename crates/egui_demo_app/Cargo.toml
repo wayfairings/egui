@@ -23,7 +23,7 @@ crate-type = ["cdylib", "rlib"]
 
 
 [features]
-default = ["glow", "persistence"]
+default = ["wgpu", "wayland", "persistence"]
 
 # image_viewer adds about 0.9 MB of WASM
 web_app = ["http", "persistence"]
@@ -31,10 +31,10 @@ web_app = ["http", "persistence"]
 http = ["ehttp", "image/jpeg", "poll-promise", "egui_extras/image"]
 image_viewer = ["image/jpeg", "egui_extras/all_loaders", "rfd"]
 persistence = [
-  "eframe/persistence",
-  "egui_extras/serde",
-  "egui/persistence",
-  "serde",
+    "eframe/persistence",
+    "egui_extras/serde",
+    "egui/persistence",
+    "serde",
 ]
 puffin = ["dep:puffin", "dep:puffin_http", "profiling/profile-with-puffin"]
 serde = ["dep:serde", "egui_demo_lib/serde", "egui/serde"]
@@ -47,18 +47,18 @@ x11 = ["eframe/x11"]
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = [
-  "js-sys",
-  "wasmbind",
+    "js-sys",
+    "wasmbind",
 ] }
 eframe = { workspace = true, default-features = false, features = [
-  "web_screen_reader",
+    "web_screen_reader",
 ] }
 egui = { workspace = true, features = ["callstack", "default", "log"] }
 egui_demo_lib = { workspace = true, features = ["default", "chrono"] }
 egui_extras = { workspace = true, features = ["default", "image"] }
 image = { workspace = true, default-features = false, features = [
-  # Ensure we can display the test images
-  "png",
+    # Ensure we can display the test images
+    "png",
 ] }
 log.workspace = true
 profiling.workspace = true
@@ -83,8 +83,8 @@ serde = { workspace = true, optional = true }
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 env_logger = { version = "0.10", default-features = false, features = [
-  "auto-color",
-  "humantime",
+    "auto-color",
+    "humantime",
 ] }
 mimalloc.workspace = true
 rfd = { version = "0.15.3", optional = true }

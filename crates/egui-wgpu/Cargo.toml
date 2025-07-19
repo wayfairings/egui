@@ -3,9 +3,9 @@ name = "egui-wgpu"
 version.workspace = true
 description = "Bindings for using egui natively using the wgpu library"
 authors = [
-  "Nils Hasenbanck <nils@hasenbanck.de>",
-  "embotech <opensource@embotech.com>",
-  "Emil Ernerfeldt <emil.ernerfeldt@gmail.com>",
+    "Nils Hasenbanck <nils@hasenbanck.de>",
+    "embotech <opensource@embotech.com>",
+    "Emil Ernerfeldt <emil.ernerfeldt@gmail.com>",
 ]
 edition.workspace = true
 rust-version.workspace = true
@@ -16,11 +16,11 @@ repository = "https://github.com/emilk/egui/tree/main/crates/egui-wgpu"
 categories = ["gui", "game-development"]
 keywords = ["wgpu", "egui", "gui", "gamedev"]
 include = [
-  "../LICENSE-APACHE",
-  "../LICENSE-MIT",
-  "**/*.rs",
-  "**/*.wgsl",
-  "Cargo.toml",
+    "../LICENSE-APACHE",
+    "../LICENSE-MIT",
+    "**/*.rs",
+    "**/*.wgsl",
+    "Cargo.toml",
 ]
 
 [lints]
@@ -34,7 +34,7 @@ rustdoc-args = ["--generate-link-to-definition"]
 default = ["fragile-send-sync-non-atomic-wasm"]
 
 ## Enable [`winit`](https://docs.rs/winit) integration. On Linux, requires either `wayland` or `x11`
-winit = ["dep:winit", "winit/rwh_06"]
+winit = ["dep:winit"]
 
 ## Enables Wayland support for winit.
 wayland = ["winit?/wayland"]

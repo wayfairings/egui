@@ -12,7 +12,7 @@ fn main() -> eframe::Result {
         ..Default::default()
     };
 
-    let eventloop = EventLoop::<UserEvent>::with_user_event().build().unwrap();
+    let eventloop = EventLoop::build().unwrap();
     eventloop.set_control_flow(ControlFlow::Poll);
 
     let mut winit_app = eframe::create_native(

@@ -21,7 +21,14 @@ all-features = true
 rustdoc-args = ["--generate-link-to-definition"]
 
 [features]
-default = ["clipboard", "links", "wayland", "winit/default", "x11"]
+default = [
+    "clipboard",
+    "links",
+    "wayland",
+    "wayland-dlopen",
+    "winit/default",
+    "x11",
+]
 
 ## Enable platform accessibility API implementations through [AccessKit](https://accesskit.dev/).
 accesskit = ["dep:accesskit_winit", "egui/accesskit"]
@@ -50,6 +57,7 @@ serde = ["egui/serde", "dep:serde"]
 
 ## Enables Wayland support.
 wayland = ["winit/wayland", "bytemuck"]
+wayland-dlopen = ["winit/wayland-dlopen", "wayland"]
 
 ## Enables compiling for x11.
 x11 = ["winit/x11", "bytemuck"]
