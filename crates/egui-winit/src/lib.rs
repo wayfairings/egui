@@ -1687,8 +1687,23 @@ pub fn create_winit_window_attributes(
     {
         use egui::ViewportLayer;
         use winit::platform::wayland::Layer;
+        use winit::platform::wayland::WindowAttributesWayland;
 
-        let mut wayland_attributes = winit::platform::wayland::WindowAttributesWayland::default();
+        let mut wayland_attributes = match _layer_surface {
+            Some(ViewportLayer::Background) => {
+                WindowAttributesWayland::layer_shell().with_layer(Layer::Background)
+            }
+            Some(ViewportLayer::Bottom) => {
+                WindowAttributesWayland::layer_shell().with_layer(Layer::Bottom)
+            }
+            Some(ViewportLayer::Top) => {
+                WindowAttributesWayland::layer_shell().with_layer(Layer::Top)
+            }
+            Some(ViewportLayer::Overlay) => {
+                WindowAttributesWayland::layer_shell().with_layer(Layer::Overlay)
+            }
+            None => WindowAttributesWayland::default(),
+        };
         match (_app_id, _app_instance) {
             (Some(app_id), Some(app_instance)) => {
                 wayland_attributes = wayland_attributes.with_name(app_id, app_instance);
@@ -1700,21 +1715,6 @@ pub fn create_winit_window_attributes(
                 wayland_attributes = wayland_attributes.with_name("", app_instance);
             }
             _ => {}
-        }
-        match _layer_surface {
-            Some(ViewportLayer::Background) => {
-                wayland_attributes = wayland_attributes.with_layer(Layer::Background);
-            }
-            Some(ViewportLayer::Bottom) => {
-                wayland_attributes = wayland_attributes.with_layer(Layer::Bottom);
-            }
-            Some(ViewportLayer::Top) => {
-                wayland_attributes = wayland_attributes.with_layer(Layer::Top);
-            }
-            Some(ViewportLayer::Overlay) => {
-                wayland_attributes = wayland_attributes.with_layer(Layer::Overlay);
-            }
-            None => {}
         }
         window_attributes =
             window_attributes.with_platform_attributes(Box::new(wayland_attributes));
